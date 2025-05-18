@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Наши регионы</title>
   <style>
-    /* Твои стили без изменений */
     * {
       box-sizing: border-box;
     }
@@ -163,26 +162,25 @@
       background-color: rgba(255, 255, 255, 0.1);
     }
 
+    /* Слайдер */
     .slider-container {
       position: relative;
-      margin: 120px auto 0;
+      margin: 120px auto 20px;
       width: 80vw;
       max-width: 1000px;
-      height: 60vh;
+      height: 50vh;
       overflow: hidden;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-
-      /* Добавим белую рамку */
       border: 5px solid white;
-      background-color: rgba(255, 255, 255, 0.1); /* чуть светлый фон для контраста */
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     .slide img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 10px; /* чуть меньше, чтобы рамка была видна */
+      border-radius: 10px;
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
     }
 
@@ -191,6 +189,7 @@
       bottom: 15px;
       width: 100%;
       text-align: center;
+      z-index: 10;
     }
 
     .dot {
@@ -208,7 +207,7 @@
       background-color: white;
     }
 
-    /* Стили для сообщения авторизации */
+    /* Сообщение авторизации */
     #authMessage {
       color: lightgreen;
       margin-left: 10px;
@@ -216,6 +215,82 @@
       align-self: center;
     }
 
+    /* Календарь */
+    .calendar-container {
+      width: 80vw;
+      max-width: 1000px;
+      margin: 0 auto 50px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+      color: white;
+      user-select: none;
+    }
+
+    .calendar-header {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .day-name {
+      font-weight: bold;
+      text-align: center;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .calendar-day {
+      position: relative;
+      padding: 12px 5px;
+      text-align: center;
+      cursor: default;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+    }
+
+    .calendar-day:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Особый день - 25 мая */
+    .special-day {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px solid white;
+      cursor: pointer;
+    }
+
+    .special-day:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Всплывающее изображение */
+    .tooltip-image {
+      display: none;
+      position: absolute;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 100px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      object-fit: cover;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .special-day:hover .tooltip-image {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -253,7 +328,7 @@
     <!-- Справа: Форма авторизации или приветствие -->
     <div class="right-side" id="rightSide">
 
-      <!-- Это изначальная форма авторизации (будет скрываться при входе) -->
+      <!-- Форма авторизации -->
       <form class="auth-form" id="authForm" onsubmit="event.preventDefault(); loginUser();">
         <input type="text" id="loginInput" placeholder="Логин" required />
         <input type="password" id="passwordInput" placeholder="Пароль" required />
@@ -262,25 +337,12 @@
         <span id="authMessage"></span>
       </form>
 
-      <!-- Блок приветствия и выхода (по умолчанию скрыт) -->
+      <!-- Блок приветствия и выхода -->
       <div id="userBlock" style="display:none; align-items:center; gap: 10px;">
         <span>Вы вошли как <strong id="userNameDisplay"></strong></span>
         <button id="logoutBtn" style="padding: 6px 10px; border-radius: 5px; cursor: pointer;">Выйти</button>
       </div>
     </div>
-  </div>
-
-  <!-- Модальное окно регистрации -->
-  <div id="registerModal" style="display:none; position:fixed; top:50%; left:50%; transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.9); padding: 20px; border-radius: 10px; color: white; z-index: 2000; min-width: 300px;">
-    <h3>Регистрация</h3>
-    <form id="registerForm" onsubmit="event.preventDefault(); registerUser();">
-      <input type="text" id="regLogin" placeholder="Логин" required style="margin-bottom:10px; width: 100%;" />
-      <input type="password" id="regPassword" placeholder="Пароль" required style="margin-bottom:10px; width: 100%;" />
-      <button type="submit" style="width: 100%;">Зарегистрироваться</button>
-      <button type="button" id="closeRegisterBtn" style="margin-top:10px; width: 100%;">Отмена</button>
-    </form>
-    <div id="registerMessage" style="margin-top: 10px;"></div>
   </div>
 
   <!-- Слайдер -->
@@ -299,130 +361,133 @@
     <div class="dots"></div>
   </div>
 
+  <!-- Календарь -->
+  <div class="calendar-container">
+    <div class="calendar-header" id="calendarHeader">Май 2025</div>
+    <div class="calendar-grid" id="calendarGrid">
+      <!-- Дни недели -->
+      <div class="day-name">Пн</div>
+      <div class="day-name">Вт</div>
+      <div class="day-name">Ср</div>
+      <div class="day-name">Чт</div>
+      <div class="day-name">Пт</div>
+      <div class="day-name">Сб</div>
+      <div class="day-name">Вс</div>
+    </div>
+  </div>
+
+  <!-- Модальное окно регистрации -->
+  <div id="registerModal" style="display:none; position:fixed; top:50%; left:50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9); padding: 20px; border-radius: 10px; color: white; z-index: 2000; min-width: 300px;">
+    <h3>Регистрация</h3>
+    <form id="registerForm" onsubmit="event.preventDefault(); registerUser();">
+      <input type="text" id="regLogin" placeholder="Логин" required style="margin-bottom:10px; width: 100%;" />
+      <input type="password" id="regPassword" placeholder="Пароль" required style="margin-bottom:10px; width: 100%;" />
+      <button type="submit" style="width: 100%;">Зарегистрироваться</button>
+      <button type="button" id="closeRegisterBtn" style="margin-top:10px; width: 100%;">Отмена</button>
+    </form>
+    <div id="registerMessage" style="margin-top:10px; color: lightgreen;"></div>
+  </div>
+
   <script>
-    // Слайдер (твоя исходная логика)
+    // ======= СЛАЙДЕР =======
     const slides = document.querySelectorAll('.slide');
     const dotsContainer = document.querySelector('.dots');
     let currentSlide = 0;
 
-    function showSlide(index) {
-      if (index >= slides.length) currentSlide = 0;
-      else if (index < 0) currentSlide = slides.length - 1;
-      else currentSlide = index;
-
-      slides.forEach((slide, i) => {
-        slide.style.display = i === currentSlide ? 'block' : 'none';
+    // Создаем точки
+    slides.forEach((_, idx) => {
+      const dot = document.createElement('span');
+      dot.classList.add('dot');
+      if (idx === 0) dot.classList.add('active');
+      dot.addEventListener('click', () => {
+        goToSlide(idx);
       });
+      dotsContainer.appendChild(dot);
+    });
 
-      // Точки
-      dotsContainer.innerHTML = '';
-      slides.forEach((_, i) => {
-        const dot = document.createElement('span');
-        dot.className = 'dot' + (i === currentSlide ? ' active' : '');
-        dot.addEventListener('click', () => showSlide(i));
-        dotsContainer.appendChild(dot);
+    const dots = document.querySelectorAll('.dot');
+
+    function goToSlide(n) {
+      slides.forEach((slide, idx) => {
+        slide.style.display = idx === n ? 'block' : 'none';
       });
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === n);
+      });
+      currentSlide = n;
     }
 
-    showSlide(currentSlide);
-    setInterval(() => showSlide(currentSlide + 1), 3500);
+    function nextSlide() {
+      let next = currentSlide + 1;
+      if (next >= slides.length) next = 0;
+      goToSlide(next);
+    }
 
-    // --- НАЧАЛО КОДА ДЛЯ АВТОРИЗАЦИИ И РЕГИСТРАЦИИ ---
+    goToSlide(0);
+    setInterval(nextSlide, 3500);
 
+    // ======= АВТОРИЗАЦИЯ =======
     const authForm = document.getElementById('authForm');
     const loginInput = document.getElementById('loginInput');
     const passwordInput = document.getElementById('passwordInput');
     const authMessage = document.getElementById('authMessage');
+    const rightSide = document.getElementById('rightSide');
     const userBlock = document.getElementById('userBlock');
     const userNameDisplay = document.getElementById('userNameDisplay');
     const logoutBtn = document.getElementById('logoutBtn');
-
-    const registerModal = document.getElementById('registerModal');
     const openRegisterBtn = document.getElementById('openRegisterBtn');
-    const closeRegisterBtn = document.getElementById('closeRegisterBtn');
-    const registerForm = document.getElementById('registerForm');
-    const regLogin = document.getElementById('regLogin');
-    const regPassword = document.getElementById('regPassword');
-    const registerMessage = document.getElementById('registerMessage');
 
-    // Проверяем, залогинен ли пользователь при загрузке
-    function checkLogin() {
-      const currentUser = localStorage.getItem('currentUser');
+    let users = JSON.parse(localStorage.getItem('users') || '{}');
+    let currentUser = localStorage.getItem('currentUser');
+
+    function updateUI() {
       if (currentUser) {
         authForm.style.display = 'none';
         userBlock.style.display = 'flex';
         userNameDisplay.textContent = currentUser;
-        authMessage.textContent = '';
       } else {
         authForm.style.display = 'flex';
         userBlock.style.display = 'none';
-        userNameDisplay.textContent = '';
+        authMessage.textContent = '';
       }
     }
 
-    checkLogin();
-
-    // Функция входа
     function loginUser() {
       const login = loginInput.value.trim();
-      const password = passwordInput.value.trim();
-
-      if (!login || !password) {
-        authMessage.style.color = 'tomato';
-        authMessage.textContent = 'Заполните все поля!';
+      const pass = passwordInput.value;
+      if (!users[login]) {
+        authMessage.textContent = 'Пользователь не найден';
         return;
       }
-
-      let users = JSON.parse(localStorage.getItem('users') || '{}');
-
-      if (users[login] && users[login] === password) {
-        localStorage.setItem('currentUser', login);
-        authMessage.style.color = 'lightgreen';
-        authMessage.textContent = 'Вход успешен!';
-        loginInput.value = '';
-        passwordInput.value = '';
-        checkLogin();
-      } else {
-        authMessage.style.color = 'tomato';
-        authMessage.textContent = 'Неверный логин или пароль!';
+      if (users[login] !== pass) {
+        authMessage.textContent = 'Неверный пароль';
+        return;
       }
+      currentUser = login;
+      localStorage.setItem('currentUser', currentUser);
+      updateUI();
+      authMessage.textContent = '';
+      loginInput.value = '';
+      passwordInput.value = '';
     }
 
-    // Функция регистрации
-    function registerUser() {
-      const login = regLogin.value.trim();
-      const password = regPassword.value.trim();
+    logoutBtn.onclick = () => {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      updateUI();
+    };
 
-      if (!login || !password) {
-        registerMessage.style.color = 'tomato';
-        registerMessage.textContent = 'Заполните все поля!';
-        return;
-      }
+    updateUI();
 
-      let users = JSON.parse(localStorage.getItem('users') || '{}');
+    // ======= РЕГИСТРАЦИЯ =======
+    const registerModal = document.getElementById('registerModal');
+    const registerForm = document.getElementById('registerForm');
+    const regLogin = document.getElementById('regLogin');
+    const regPassword = document.getElementById('regPassword');
+    const registerMessage = document.getElementById('registerMessage');
+    const closeRegisterBtn = document.getElementById('closeRegisterBtn');
 
-      if (users[login]) {
-        registerMessage.style.color = 'tomato';
-        registerMessage.textContent = 'Пользователь уже существует!';
-        return;
-      }
-
-      users[login] = password;
-      localStorage.setItem('users', JSON.stringify(users));
-
-      registerMessage.style.color = 'lightgreen';
-      registerMessage.textContent = 'Регистрация прошла успешно! Теперь войдите.';
-
-      // Очистим поля и закроем окно через 2 секунды
-      setTimeout(() => {
-        registerModal.style.display = 'none';
-        registerMessage.textContent = '';
-        regLogin.value = '';
-        regPassword.value = '';
-      }, 2000);
-    }
-
-    // Открытие модального окна регистрации
     openRegisterBtn.onclick = () => {
       registerModal.style.display = 'block';
       registerMessage.textContent = '';
@@ -430,17 +495,65 @@
       regPassword.value = '';
     };
 
-    // Закрытие модального окна регистрации
     closeRegisterBtn.onclick = () => {
       registerModal.style.display = 'none';
     };
 
-    // Кнопка выхода
-    logoutBtn.onclick = () => {
-      localStorage.removeItem('currentUser');
-      checkLogin();
-    };
+    function registerUser() {
+      const login = regLogin.value.trim();
+      const pass = regPassword.value;
+      if (users[login]) {
+        registerMessage.style.color = 'red';
+        registerMessage.textContent = 'Такой пользователь уже есть';
+        return;
+      }
+      users[login] = pass;
+      localStorage.setItem('users', JSON.stringify(users));
+      registerMessage.style.color = 'lightgreen';
+      registerMessage.textContent = 'Регистрация успешна! Теперь войдите.';
+      regLogin.value = '';
+      regPassword.value = '';
+    }
 
+    // ======= КАЛЕНДАРЬ МАЙ 2025 =======
+    const calendarGrid = document.getElementById('calendarGrid');
+
+    // Месяц май 2025 начинается с четверга (четвертый день недели), учитывая Пн=1
+    // В нашем календаре понедельник - первый день, значит:
+    // Май 1 мая 2025 — четверг -> значит пустые ячейки для Пн, Вт, Ср = 3
+
+    const daysInMay = 31;
+    const firstDayOfWeek = 4; // четверг -> значит 3 пустых дня (Пн=1, Вт=2, Ср=3)
+
+    // Добавляем пустые ячейки перед 1 мая
+    for (let i = 1; i < firstDayOfWeek; i++) {
+      const emptyCell = document.createElement('div');
+      calendarGrid.appendChild(emptyCell);
+    }
+
+    for (let day = 1; day <= daysInMay; day++) {
+      const dayCell = document.createElement('div');
+      dayCell.classList.add('calendar-day');
+      dayCell.textContent = day;
+
+      if (day === 25) {
+        dayCell.classList.add('special-day');
+
+        // Создаем всплывающее изображение
+        const tooltipImg = document.createElement('img');
+        tooltipImg.src = 'date25may.jpg';
+        tooltipImg.alt = '25 мая';
+        tooltipImg.classList.add('tooltip-image');
+
+        dayCell.appendChild(tooltipImg);
+
+        // Наведение и уход по событиям через CSS :hover (уже сделано)
+      }
+
+      calendarGrid.appendChild(dayCell);
+    }
   </script>
+
 </body>
 </html>
+
