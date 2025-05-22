@@ -1,0 +1,149 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url('1.jpg');
+  background-size: cover;       /* Картинка растянется на весь экран */
+  background-position: center;  /* Центрируем картинку */
+  background-repeat: no-repeat; /* Без повторения */
+  height: 100vh;                /* Высота тела страницы — весь экран */
+  font-family: Arial, sans-serif;
+  color: white;
+}
+
+.top-bar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+/* Левая сторона: меню */
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Меню */
+.menu {
+  display: flex;
+  gap: 15px;
+}
+
+/* Кнопки меню */
+.menu-button {
+  padding: 10px 18px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.menu-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* Центрированный логотип */
+.logo-link {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.logo-img {
+  height: 80px;
+  border: 2px solid white;
+  border-radius: 8px;
+  transition: filter 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+
+.logo-link:hover .logo-img {
+  filter: brightness(1.3);
+  transform: scale(1.1);
+  border-color: #fff;
+  box-shadow: 0 0 8px 2px rgba(255,255,255,0.7);
+}
+
+/* Правая часть — номер */
+.right-info {
+  white-space: nowrap;
+  font-size: 1.1rem;
+  user-select: none;
+}
+
+/* Обёртка для выпадающего меню */
+.menu-dropdown {
+  position: relative;
+}
+
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.95);
+  padding: 10px 0;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+/* При наведении на меню-пункт */
+.menu-dropdown:hover .dropdown-list {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Сами кнопки филиалов */
+.dropdown-item {
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  transition: background-color 0.2s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Анимация появления по очереди */
+.menu-dropdown:hover .dropdown-item {
+  animation: fadeInUp 0.4s forwards;
+}
+
+.menu-dropdown:hover .dropdown-item:nth-child(1) { animation-delay: 0.05s; }
+.menu-dropdown:hover .dropdown-item:nth-child(2) { animation-delay: 0.10s; }
+.menu-dropdown:hover .dropdown-item:nth-child(3) { animation-delay: 0.15s; }
+.menu-dropdown:hover .dropdown-item:nth-child(4) { animation-delay: 0.20s; }
+.menu-dropdown:hover .dropdown-item:nth-child(5) { animation-delay: 0.25s; }
+.menu-dropdown:hover .dropdown-item:nth-child(6) { animation-delay: 0.30s; }
+.menu-dropdown:hover .dropdown-item:nth-child(7) { animation-delay: 0.35s; }
+.menu-dropdown:hover .dropdown-item:nth-child(8) { animation-delay: 0.40s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Наведение */
+.dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+}
